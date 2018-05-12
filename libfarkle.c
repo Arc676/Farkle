@@ -13,6 +13,8 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //See README and LICENSE for more details
 
+#include "libfarkle.h"
+
 void initRoll(Roll* roll) {
 	for (int i = 0; i < 6; i++) {
 		roll->dice[i] = 0;
@@ -48,6 +50,6 @@ void bankPoints(Player* player) {
 	for (int i = 0; i < player->currentHand->timesSelected; i++) {
 		player->score += player->currentHand->selections[i].value;
 	}
-	emptyHand(player->hand);
+	emptyHand(player->currentHand);
 }
 

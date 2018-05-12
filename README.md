@@ -1,5 +1,16 @@
 # Farkle
+
 Library and command line frontend for Farkle dice game
+
+For details regarding the functions available in the library, please consult the commented header file.
+
+## License
+
+Project source code available under GPLv3. See `LICENSE` for full license text.
+
+## Contributing
+
+Please follow established coding conventions and add a copyright line to the opening comments of each source file you modify.
 
 ## Gameplay
 

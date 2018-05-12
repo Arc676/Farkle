@@ -16,6 +16,17 @@
 #include <stdlib.h>
 
 /**
+ * Represents the current state of the game
+ * i.e. the action that the current player
+ * must take
+ */
+typedef enum GameState {
+	ROLLING,
+	PICKING,
+	TURN_ENDED
+} GameState;
+
+/**
  * Represents a player's roll
  */
 typedef struct Roll {

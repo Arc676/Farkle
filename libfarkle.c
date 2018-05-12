@@ -25,7 +25,7 @@ void newRoll(Roll* roll) {
 	for (int i = 0; i < 6; i++) {
 		// negative values represent dice removed from the pool
 		if (roll->dice[i] >= 0) {
-			roll->dice[i] = rand() * 5 / RAND_MAX + 1;
+			roll->dice[i] = rand() % 6 + 1;
 		}
 	}
 }

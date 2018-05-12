@@ -15,29 +15,104 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "libfarkle.h"
 
 Player** players;
+int pCount = 1;
+int turns = 10;
 
-void playGame() {}
+void printHelp() {
+	printf("help - show this help text\n\
+roll - roll die pool\n\
+view - view the current roll\n\
+pick - pick dice from die pool\n\
+hand - show your current hand\n\
+bank - bank all points currently in hand\n\
+exit - exit the game immediately\n");
+}
+
+void playGame() {
+	char cmd[100];
+	Roll* roll = (Roll*)malloc(sizeof(Roll));
+	initRoll(roll);
+	// play for given number of turns
+	for (int turn = 0; turn < turns; turn++) {
+		// each player gets a turn
+		for (int player = 0; player < pCount; player++) {
+			GameState state = ROLLING;
+			// until player banks or farkles
+			while (state != TURN_ENDED) {
+				printf("%d> ", player + 1);
+				fgets(cmd, sizeof(cmd), stdin);
+				cmd[strlen(cmd) - 1] = 0;
+				if (!strcmp(cmd, "help")) {
+					printHelp();
+				} else if (!strcmp(cmd, "bank")) {
+					state = TURN_ENDED;
+				} else if (!strcmp(cmd, "exit")) {
+					// set all loop limits and exit
+					player = pCount;
+					turn = turns;
+					break;
+				} else if (!strcmp(cmd, "roll")) {
+					if (state == PICKING) {
+						printf("You have already rolled. Type 'pick' to pick from the die pool.\n");
+					} else {
+						newRoll(roll);
+						state = PICKING;
+					}
+				} else if (!strcmp(cmd, "view")) {
+					if (state == ROLLING) {
+						printf("You have not rolled yet. Type 'roll' to roll the die pool.\n");
+					} else {
+						printf("Your roll:\n");
+						for (int i = 0; i < 6; i++) {
+							if (roll->dice[i] >= 0) {
+								printf("%d ", roll->dice[i]);
+							} else {
+								printf("- ");
+							}
+						}
+						printf("\n");
+					}
+				} else {
+					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
+				}
+				memset(cmd, 0, sizeof(cmd));
+			}
+		}
+	}
+	printf("Game over\n");
+}
 
 int main(int argc, char* argv[]) {
-	int opt, pCount = 1;
-	while ((opt = getopt(argc, argv, "p:")) != -1) {
+	int opt;
+	while ((opt = getopt(argc, argv, "p:t:")) != -1) {
 		switch (opt) {
 			case 'p':
 				pCount = atoi(optarg);
 				break;
+			case 't':
+				turns = atoi(optarg);
+				break;
 			default:
-				fprintf(stderr, "Usage: farkle [-p player_count]\n");
+				fprintf(stderr, "Usage: farkle [-p player_count] [-t turn_limit]\n");
 				return 1;
 		}
 	}
+	// create players
 	players = (Player**)malloc(pCount * sizeof(Player*));
 	for (int i = 0; i < pCount; i++) {
 		players[i] = (Player*)malloc(sizeof(Player));
 	}
+	// play game
 	playGame();
+	// free player structs
+	for (int i = 0; i < pCount; i++) {
+		free(players[i]);
+	}
+	free(players);
 	return 0;
 }

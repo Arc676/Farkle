@@ -26,6 +26,7 @@ typedef struct Roll {
  */
 typedef struct Selection {
 	int values[6];
+	int value;
 } Selection;
 
 /**

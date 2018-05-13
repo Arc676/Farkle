@@ -36,8 +36,9 @@ void newRoll(Roll* roll) {
 }
 
 void determinePickableDice(Roll* roll, int* allowed) {
-	memset(allowed, 0, 6);
 	int values[6];
+	memset(values, 0, sizeof(values));
+
 	for (int i = 0; i < 6; i++) {
 		if (!roll->dice[i].picked) {
 			values[roll->dice[i].value - 1]++;
@@ -101,13 +102,12 @@ int selectDice(Roll* roll, Hand* hand, int dice[]) {
 
 void constructSelection(Roll* roll, Selection* selection) {
 	int dieCount = 0;
-	int* values = selection->values;
 	int chosenValues[6];
 	memset(chosenValues, 0, sizeof(chosenValues));
 
 	for (int i = 0; i < 6; i++) {
 		if (roll->dice[i].pickedThisRoll) {
-			values[dieCount++] = roll->dice[i].value;
+			selection->values[dieCount++] = roll->dice[i].value;
 			chosenValues[roll->dice[i].value - 1]++;
 		}
 		// zero-indexed 1 and 5
@@ -120,9 +120,9 @@ void constructSelection(Roll* roll, Selection* selection) {
 		if (i == 4) {
 			continue;
 		}
-		if (chosenValues[0] >= 3) {
+		if (chosenValues[i] >= 3) {
 			selection->value += (i + 1) * 100 * (chosenValues[i] - 2);
-		} else if (chosenValues[0] > 0) {
+		} else if (chosenValues[i] > 0) {
 			selectionValid = 0;
 			break;
 		}
@@ -140,7 +140,7 @@ void constructSelection(Roll* roll, Selection* selection) {
 	if (chosenValues[4] >= 3) {
 		selection->value += 500 * (chosenValues[4] - 2);
 	} else {
-		selection->value += 50 * chosenValues[0];
+		selection->value += 50 * chosenValues[4];
 	}
 }
 

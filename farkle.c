@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
 #include "libfarkle.h"
 
@@ -66,6 +67,7 @@ void playGame() {
 				if (!strcmp(cmd, "help")) {
 					printHelp();
 				} else if (!strcmp(cmd, "bank")) {
+					bankPoints(players[player]);
 					state = TURN_ENDED;
 				} else if (!strcmp(cmd, "exit")) {
 					// set all loop limits and exit
@@ -78,7 +80,13 @@ void playGame() {
 					} else {
 						newRoll(roll);
 						viewRoll(roll);
-						state = PICKING;
+						if (isFarkle(roll)) {
+							printf("Farkle!\n");
+							emptyHand(players[player]->hand);
+							state = TURN_ENDED;
+						} else {
+							state = PICKING;
+						}
 					}
 				} else if (!strcmp(cmd, "view")) {
 					if (state == ROLLING) {
@@ -87,13 +95,17 @@ void playGame() {
 						viewRoll(roll);
 					}
 				} else if (!strcmp(cmd, "pick")) {
-					printf("Enter die index to pick or unpick. Enter a value greater than 5 to stop picking.\n");
+					printf("Enter die index to pick or unpick. Enter a value greater than 6 to stop picking.\n");
 					int index = 0;
 					char input[10];
-					while (index < 6) {
+					for (;;) {
+						printf("Picking> ");
 						fgets(input, sizeof(input), stdin);
 						index = atoi(input);
-						if (roll->dice[index].picked) {
+						if (index < 1 || index > 6) {
+							break;
+						}
+						if (roll->dice[index - 1].picked) {
 							if (unpickDie(roll, index - 1)) {
 								printf("Unpicked die %d\n", index);
 							} else {
@@ -115,6 +127,9 @@ void playGame() {
 						appendSelection(players[player], sel);
 					} else {
 						printf("The selection is invalid\n");
+						for (int i = 0; i < 6; i++) {
+							unpickDie(roll, i);
+						}
 					}
 				} else {
 					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
@@ -127,6 +142,7 @@ void playGame() {
 }
 
 int main(int argc, char* argv[]) {
+	srand(time(NULL));
 	int opt;
 	while ((opt = getopt(argc, argv, "p:t:")) != -1) {
 		switch (opt) {

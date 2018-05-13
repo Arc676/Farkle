@@ -92,6 +92,57 @@ int unpickDie(Roll* roll, int die) {
 }
 
 int selectDice(Roll* roll, Hand* hand, int dice[]) {
+	return 0;
+}
+
+void constructSelection(Roll* roll, Selection* selection) {
+	int dieCount = 0;
+	int* values = selection->values;
+	int chosenValues[6];
+	memset(chosenValues, 0, sizeof(chosenValues));
+
+	for (int i = 0; i < 6; i++) {
+		if (roll->dice[i]->pickedThisRoll) {
+			values[dieCount++] = roll->dice[i].value;
+			chosenValues[roll->dice[i].value - 1]++;
+		}
+		// zero-indexed 1 and 5
+		if (i != 0 && i != 4) {
+			chosenValues[i] -= 2;
+		}
+	}
+	int selectionValid = 1;
+	for (int i = 1; i < 6; i++) {
+		if (i == 4) {
+			continue;
+		}
+		if (chosenValues[0] >= 3) {
+			selection->value += (i + 1) * 100 * (chosenValues[i] - 2);
+		} else if (chosenValues[0] > 0) {
+			selectionValid = 0;
+			break;
+		}
+	}
+	if (!selectionValid) {
+		selection->value = 0;
+		return;
+	}
+	selection->dieCount = dieCount;
+	if (chosenValues[0] >= 3) {
+		selection->value += 1000 * (chosenValues[0] - 2);
+	} else {
+		selection->value += 100 * chosenValues[0];
+	}
+	if (chosenValues[4] >= 3) {
+		selection->value += 500 * (chosenValues[4] - 2);
+	} else {
+		selection->value += 50 * chosenValues[0];
+	}
+}
+
+void appendSelection(Player* player, Selection* selection) {
+	Hand* hand = player->currentHand;
+	hand->selections[hand->timesSelected++] = selection;
 }
 
 void emptyHand(Hand* hand) {
@@ -100,7 +151,7 @@ void emptyHand(Hand* hand) {
 
 void bankPoints(Player* player) {
 	for (int i = 0; i < player->currentHand->timesSelected; i++) {
-		player->score += player->currentHand->selections[i].value;
+		player->score += player->currentHand->selections[i]->value;
 	}
 	emptyHand(player->currentHand);
 }

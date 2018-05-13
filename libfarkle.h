@@ -48,6 +48,7 @@ typedef struct Roll {
  */
 typedef struct Selection {
 	int values[6];
+	int dieCount;
 	int value;
 } Selection;
 
@@ -56,7 +57,7 @@ typedef struct Selection {
  * all the dice selected this turn
  */
 typedef struct Hand {
-	Selection selections[10];
+	Selection* selections[10];
 	int timesSelected;
 } Hand;
 
@@ -129,6 +130,21 @@ int diePoolExhausted(Roll* roll);
  * @return Whether the selection is valid
  */
 int selectDice(Roll* roll, Hand* hand, int dice[]);
+
+/**
+ * Constructs the die selection based on the state of
+ * the rolled dice
+ * @param roll Pointer to roll state
+ * @param selection Pointer to struct in which selection data should be stored
+ */
+void constructSelection(Roll* roll, Selection* selection);
+
+/**
+ * Adds the given selection of dice to the given player's hand
+ * @param player Player to whom the selection belongs
+ * @param selection Die selection to add
+ */
+void appendSelection(Player* player, Selection* selection);
 
 /**
  * Empties a hand

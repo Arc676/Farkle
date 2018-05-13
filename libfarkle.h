@@ -27,10 +27,19 @@ typedef enum GameState {
 } GameState;
 
 /**
+ * Represents an individual die
+ */
+typedef struct Die {
+	int value;
+	int picked;
+	int pickedThisRoll;
+} Die;
+
+/**
  * Represents a player's roll
  */
 typedef struct Roll {
-	int dice[6];
+	Die dice[6];
 } Roll;
 
 /**
@@ -71,6 +80,38 @@ void initRoll(Roll* roll);
  * @param roll Pointer to the roll state
  */
 void newRoll(Roll* roll);
+
+/**
+ * Determines which of the rolled dice can be
+ * picked by the player based on their value
+ * and how many times the number has appeared
+ * @param roll Pointer to roll state
+ * @param allowed Array in which to store the acceptable dice (min size 6)
+ */
+void determinePickableDice(Roll* roll, int* allowed);
+
+/**
+ * Determines whether the roll was a farkle
+ * @param roll Pointer to roll state
+ * @return Whether any dice are worth points
+ */
+int isFarkle(Roll* roll);
+
+/**
+ * Removes a die from the pool
+ * @param roll Pointer to the roll state
+ * @param die Index of the die to remove
+ * @return Whether the die was successfully removed
+ */
+int pickDie(Roll* roll, int die);
+
+/**
+ * Puts a die back into the pool
+ * @param roll Pointer to the roll state
+ * @param die Index of the die to put back
+ * @return Whether the die was successfully put back
+ */
+int unpickDie(Roll* roll, int die);
 
 /**
  * Determines whether the die pool has been exhausted

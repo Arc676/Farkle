@@ -23,20 +23,72 @@ void initRoll(Roll* roll) {
 
 void newRoll(Roll* roll) {
 	for (int i = 0; i < 6; i++) {
-		// negative values represent dice removed from the pool
-		if (roll->dice[i] >= 0) {
-			roll->dice[i] = rand() % 6 + 1;
+		if (!roll->dice[i].picked) {
+			roll->dice[i].value = rand() % 6 + 1;
+		} else {
+			roll->dice[i].pickedThisRoll = 0;
 		}
 	}
 }
 
-int diePoolExhausted(Roll* roll) {
+void determinePickableDice(Roll* roll, int* allowed) {
+	memset(allowed, 0, 6);
+	int values[6];
 	for (int i = 0; i < 6; i++) {
-		if (roll->dice[i] >= 0) {
+		if (!roll->dice[i].picked) {
+			values[roll->dice[i].value - 1]++;
+		}
+		// zero-indexed 1 and 5; values that can be picked
+		// even if they only appear once
+		if (i != 0 && i != 4) {
+			values[i] -= 2;
+		}
+	}
+	for (int i = 0; i < 6; i++) {
+		allowed[i] = !roll->dice[i].picked && values[roll->dice[i].value - 1] > 0;
+	}
+}
+
+int isFarkle(Roll* roll) {
+	int allowed[6];
+	determinePickableDice(roll, allowed);
+	for (int i = 0; i < 6; i++) {
+		if (allowed[i]) {
 			return 0;
 		}
 	}
 	return 1;
+}
+
+int diePoolExhausted(Roll* roll) {
+	for (int i = 0; i < 6; i++) {
+		if (!roll->dice[i].picked) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int pickDie(Roll* roll, int die) {
+	int allowed[6];
+	determinePickableDice(roll, allowed);
+	if (allowed[die]) {
+		roll->dice[die].picked = 1;
+		roll->dice[die].pickedThisRoll = 1;
+		return 1;
+	}
+	return 0;
+}
+
+int unpickDie(Roll* roll, int die) {
+	if (roll->dice[die].picked) {
+		if (roll->dice[die].pickedThisRoll) {
+			roll->dice[die].picked = 0;
+			roll->dice[die].pickedThisRoll = 0;
+			return 1;
+		}
+	}
+	return 0;
 }
 
 int selectDice(Roll* roll, Hand* hand, int dice[]) {

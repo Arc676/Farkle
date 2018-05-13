@@ -33,14 +33,26 @@ bank - bank all points currently in hand\n\
 exit - exit the game immediately\n");
 }
 
+void viewRoll(Roll* roll) {
+	printf("Your roll:\n");
+	for (int i = 0; i < 6; i++) {
+		if (roll->dice[i].picked) {
+			printf("- ");
+		} else {
+			printf("%d ", roll->dice[i]);
+		}
+	}
+	printf("\n");
+}
+
 void playGame() {
 	char cmd[100];
 	Roll* roll = (Roll*)malloc(sizeof(Roll));
-	initRoll(roll);
 	// play for given number of turns
 	for (int turn = 0; turn < turns; turn++) {
 		// each player gets a turn
 		for (int player = 0; player < pCount; player++) {
+			initRoll(roll);
 			GameState state = ROLLING;
 			// until player banks or farkles
 			while (state != TURN_ENDED) {
@@ -55,28 +67,22 @@ void playGame() {
 					// set all loop limits and exit
 					player = pCount;
 					turn = turns;
-					break;
+					state = TURN_ENDED;
 				} else if (!strcmp(cmd, "roll")) {
 					if (state == PICKING) {
 						printf("You have already rolled. Type 'pick' to pick from the die pool.\n");
 					} else {
 						newRoll(roll);
+						viewRoll(roll);
 						state = PICKING;
 					}
 				} else if (!strcmp(cmd, "view")) {
 					if (state == ROLLING) {
 						printf("You have not rolled yet. Type 'roll' to roll the die pool.\n");
 					} else {
-						printf("Your roll:\n");
-						for (int i = 0; i < 6; i++) {
-							if (roll->dice[i] >= 0) {
-								printf("%d ", roll->dice[i]);
-							} else {
-								printf("- ");
-							}
-						}
-						printf("\n");
+						viewRoll(roll);
 					}
+				} else if (!strcmp(cmd, "pick")) {
 				} else {
 					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
 				}

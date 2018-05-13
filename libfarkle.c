@@ -17,7 +17,11 @@
 
 void initRoll(Roll* roll) {
 	for (int i = 0; i < 6; i++) {
-		roll->dice[i] = 0;
+		Die die;
+		die.picked = 0;
+		die.pickedThisRoll = 0;
+		die.value = 0;
+		roll->dice[i] = die;
 	}
 }
 
@@ -102,7 +106,7 @@ void constructSelection(Roll* roll, Selection* selection) {
 	memset(chosenValues, 0, sizeof(chosenValues));
 
 	for (int i = 0; i < 6; i++) {
-		if (roll->dice[i]->pickedThisRoll) {
+		if (roll->dice[i].pickedThisRoll) {
 			values[dieCount++] = roll->dice[i].value;
 			chosenValues[roll->dice[i].value - 1]++;
 		}
@@ -141,8 +145,24 @@ void constructSelection(Roll* roll, Selection* selection) {
 }
 
 void appendSelection(Player* player, Selection* selection) {
-	Hand* hand = player->currentHand;
+	Hand* hand = player->hand;
 	hand->selections[hand->timesSelected++] = selection;
+	if (hand->timesSelected > hand->selectionSize) {
+		Selection** newSel = (Selection**)realloc(hand->selections, hand->selectionSize * 2);
+		if (newSel == NULL) {
+			//fprintf(stderr, "Warning: realloc failed! Appending more selections to your hand could lead to a segfault!\n");
+		} else {
+			hand->selections = newSel;
+			hand->selectionSize *= 2;
+		}
+	}
+}
+
+Player* createPlayer() {
+	Player* p = (Player*)malloc(sizeof(Player));
+	p->hand = (Hand*)malloc(sizeof(Hand));
+	p->hand->selectionSize = 10;
+	p->hand->selections = (Selection**)malloc(p->hand->selectionSize * sizeof(Selection*));
 }
 
 void emptyHand(Hand* hand) {
@@ -150,9 +170,9 @@ void emptyHand(Hand* hand) {
 }
 
 void bankPoints(Player* player) {
-	for (int i = 0; i < player->currentHand->timesSelected; i++) {
-		player->score += player->currentHand->selections[i]->value;
+	for (int i = 0; i < player->hand->timesSelected; i++) {
+		player->score += player->hand->selections[i]->value;
 	}
-	emptyHand(player->currentHand);
+	emptyHand(player->hand);
 }
 

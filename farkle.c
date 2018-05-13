@@ -35,6 +35,10 @@ exit - exit the game immediately\n");
 
 void viewRoll(Roll* roll) {
 	printf("Your roll:\n");
+	for (int i = 1; i <= 6; i++) {
+		printf("%d ", i);
+	}
+	printf("\n------------\n");
 	for (int i = 0; i < 6; i++) {
 		if (roll->dice[i].picked) {
 			printf("- ");
@@ -83,6 +87,35 @@ void playGame() {
 						viewRoll(roll);
 					}
 				} else if (!strcmp(cmd, "pick")) {
+					printf("Enter die index to pick or unpick. Enter a value greater than 5 to stop picking.\n");
+					int index = 0;
+					char input[10];
+					while (index < 6) {
+						fgets(input, sizeof(input), stdin);
+						index = atoi(input);
+						if (roll->dice[index].picked) {
+							if (unpickDie(roll, index - 1)) {
+								printf("Unpicked die %d\n", index);
+							} else {
+								printf("You cannot unpick this die\n");
+							}
+						} else {
+							if (pickDie(roll, index - 1)) {
+								printf("Picked die %d\n", index);
+							} else {
+								printf("You cannot pick this die\n");
+							}
+						}
+					}
+					Selection* sel = (Selection*)malloc(sizeof(Selection));
+					constructSelection(roll, sel);
+					if (sel->value > 0) {
+						printf("Selected %d points' worth of dice.\n", sel->value);
+						state = ROLLING;
+						appendSelection(players[player], sel);
+					} else {
+						printf("The selection is invalid\n");
+					}
 				} else {
 					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
 				}
@@ -111,7 +144,7 @@ int main(int argc, char* argv[]) {
 	// create players
 	players = (Player**)malloc(pCount * sizeof(Player*));
 	for (int i = 0; i < pCount; i++) {
-		players[i] = (Player*)malloc(sizeof(Player));
+		players[i] = createPlayer();
 	}
 	// play game
 	playGame();

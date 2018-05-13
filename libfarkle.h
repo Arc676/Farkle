@@ -14,6 +14,7 @@
 //See README and LICENSE for more details
 
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * Represents the current state of the game
@@ -57,7 +58,8 @@ typedef struct Selection {
  * all the dice selected this turn
  */
 typedef struct Hand {
-	Selection* selections[10];
+	Selection** selections;
+	int selectionSize;
 	int timesSelected;
 } Hand;
 
@@ -65,7 +67,7 @@ typedef struct Hand {
  * Represents a player
  */
 typedef struct Player {
-	Hand* currentHand;
+	Hand* hand;
 	int score;
 } Player;
 
@@ -145,6 +147,12 @@ void constructSelection(Roll* roll, Selection* selection);
  * @param selection Die selection to add
  */
 void appendSelection(Player* player, Selection* selection);
+
+/**
+ * Initializes a Player struct
+ * @return Pointer to the new Player struct
+ */
+Player* createPlayer();
 
 /**
  * Empties a hand

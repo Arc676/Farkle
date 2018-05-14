@@ -94,11 +94,7 @@ void playGame() {
 						}
 					}
 				} else if (!strcmp(cmd, "view")) {
-					if (state == ROLLING) {
-						printf("You have not rolled yet. Type 'roll' to roll the die pool.\n");
-					} else {
-						viewRoll(roll);
-					}
+					viewRoll(roll);
 				} else if (!strcmp(cmd, "pick")) {
 					if (state == ROLLING) {
 						printf("You have already picked dice. Type 'unpick' to reset your selection and then 'pick' to pick again.\n");
@@ -142,6 +138,20 @@ void playGame() {
 					undoSelection(players[player]);
 					deselectRoll(roll);
 					state = PICKING;
+				} else if (!strcmp(cmd, "hand")) {
+					Selection** sels = players[player]->hand->selections;
+					int selCount = players[player]->hand->timesSelected;
+					int totalPts = 0;
+					printf("Your selections:\n");
+					for (int i = 0; i < selCount; i++) {
+						int valCount = sels[i]->dieCount;
+						for (int j = 0; j < valCount; j++) {
+							printf("%d ", sels[i]->values[j]);
+						}
+						printf("\n");
+						totalPts += sels[i]->value;
+					}
+					printf("%d points in hand.\n", totalPts);
 				} else {
 					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
 				}

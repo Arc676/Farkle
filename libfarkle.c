@@ -26,6 +26,9 @@ void initRoll(Roll* roll) {
 }
 
 void newRoll(Roll* roll) {
+	if (diePoolExhausted(roll)) {
+		initRoll(roll);
+	}
 	for (int i = 0; i < 6; i++) {
 		if (!roll->dice[i].picked) {
 			roll->dice[i].value = rand() % 6 + 1;

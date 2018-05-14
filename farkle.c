@@ -58,6 +58,7 @@ void playGame() {
 	for (int turn = 0; turn < turns; turn++) {
 		// each player gets a turn
 		for (int player = 0; player < pCount; player++) {
+			printf("Player %d's turn. Current score: %d.\n", player + 1, players[player]->score);
 			initRoll(roll);
 			GameState state = ROLLING;
 			// until player banks or farkles

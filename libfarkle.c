@@ -40,7 +40,7 @@ void determinePickableDice(Roll* roll, int* allowed) {
 	memset(values, 0, sizeof(values));
 
 	for (int i = 0; i < 6; i++) {
-		if (!roll->dice[i].pickedThisRoll) {
+		if (!roll->dice[i].picked || roll->dice[i].pickedThisRoll) {
 			values[roll->dice[i].value - 1]++;
 		}
 		// zero-indexed 1 and 5; values that can be picked
@@ -96,10 +96,6 @@ int unpickDie(Roll* roll, int die) {
 	return 0;
 }
 
-int selectDice(Roll* roll, Hand* hand, int dice[]) {
-	return 0;
-}
-
 void constructSelection(Roll* roll, Selection* selection) {
 	int dieCount = 0;
 	int chosenValues[6];
@@ -109,10 +105,6 @@ void constructSelection(Roll* roll, Selection* selection) {
 		if (roll->dice[i].pickedThisRoll) {
 			selection->values[dieCount++] = roll->dice[i].value;
 			chosenValues[roll->dice[i].value - 1]++;
-		}
-		// zero-indexed 1 and 5
-		if (i != 0 && i != 4) {
-			chosenValues[i] -= 2;
 		}
 	}
 	int selectionValid = 1;

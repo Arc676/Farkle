@@ -124,16 +124,6 @@ int unpickDie(Roll* roll, int die);
 int diePoolExhausted(Roll* roll);
 
 /**
- * Selects a subset of dice from the pool
- * and adds them to the given hand
- * @param roll Pointer to the roll state
- * @param hand Hand to which the dice should be added
- * @param dice[] List of indices of dice that should be selected
- * @return Whether the selection is valid
- */
-int selectDice(Roll* roll, Hand* hand, int dice[]);
-
-/**
  * Constructs the die selection based on the state of
  * the rolled dice
  * @param roll Pointer to roll state

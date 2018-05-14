@@ -160,9 +160,12 @@ void appendSelection(Player* player, Selection* selection) {
 
 Player* createPlayer() {
 	Player* p = (Player*)malloc(sizeof(Player));
+	p->score = 0;
 	p->hand = (Hand*)malloc(sizeof(Hand));
+	p->hand->timesSelected = 0;
 	p->hand->selectionSize = 10;
 	p->hand->selections = (Selection**)malloc(p->hand->selectionSize * sizeof(Selection*));
+	return p;
 }
 
 void emptyHand(Hand* hand) {

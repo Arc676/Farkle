@@ -1,14 +1,22 @@
 CC=gcc
-FLAGS=-c
+FLAGS=-std=c11
+
+ifdef DEBUG
+FLAGS+=-g -O0
+endif
+
+INCLUDE=-I . -L .
+CFLAGS=$(FLAGS) $(INCLUDE)
+LIB=-l farkle
 
 farkle: lib
-	$(CC) -I . -L . farkle.c -l farkle -o farkle
+	$(CC) $(CFLAGS) farkle.c $(LIB) -o farkle
 
 lib: libfarkle.o
 	ar rcs libfarkle.a libfarkle.o
 
 libfarkle.o:
-	$(CC) $(FLAGS) libfarkle.c
+	$(CC) -c $(FLAGS) libfarkle.c
 
 clean:
 	rm -f farkle *.o *.a

@@ -14,7 +14,7 @@
 //See README and LICENSE for more details
 
 #include <stdio.h>
-#include <unistd.h>
+#include <getopt.h>
 #include <string.h>
 #include <time.h>
 
@@ -44,7 +44,7 @@ void viewRoll(Roll* roll) {
 		if (roll->dice[i].picked) {
 			printf("- ");
 		} else {
-			printf("%d ", roll->dice[i]);
+			printf("%d ", roll->dice[i].value);
 		}
 	}
 	printf("\n");
@@ -144,6 +144,7 @@ void playGame() {
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
 	int opt;
+	char* optarg;
 	while ((opt = getopt(argc, argv, "p:t:")) != -1) {
 		switch (opt) {
 			case 'p':

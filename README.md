@@ -12,6 +12,10 @@ Project source code available under GPLv3. See `LICENSE` for full license text.
 
 Please follow established coding conventions and add a copyright line to the opening comments of each source file you modify.
 
+## Compiling
+
+The `Makefile` includes separate targets for compiling the library and the game, as well as a `clean` target for removing intermediate files and compile products. By defining the `DEBUG` macro when calling `make`, debug flags are passed to the compiler to allow debugging of the program.
+
 ## Gameplay
 
 Farkle is a dice game in which the objective is to score as many points as possible. The number of turns is limited to an amount determined before the game begins. Players roll dice to score points in the following ways:

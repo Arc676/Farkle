@@ -163,14 +163,31 @@ void deselectRoll(Roll* roll) {
 	}
 }
 
-Player* createPlayer() {
+Player* createPlayer(char* name) {
 	Player* p = (Player*)malloc(sizeof(Player));
 	p->score = 0;
+	p->name = name;
 	p->hand = (Hand*)malloc(sizeof(Hand));
 	p->hand->timesSelected = 0;
 	p->hand->selectionSize = 10;
 	p->hand->selections = (Selection**)malloc(p->hand->selectionSize * sizeof(Selection*));
 	return p;
+}
+
+int comparePlayers(const void* p1, const void* p2) {
+	int s1 = (*(Player**)p1)->score;
+	int s2 = (*(Player**)p2)->score;
+	if (s1 > s2) {
+		return -1;
+	}
+	if (s1 < s2) {
+		return 1;
+	}
+	return 0;
+}
+
+void sortPlayers(Player** players, int count) {
+	qsort(players, count, sizeof(Player*), comparePlayers);
 }
 
 void emptyHand(Player* player) {

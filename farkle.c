@@ -170,16 +170,17 @@ void playGame() {
 		return;
 	}
 	// save player scores to disk
-	FILE* file = fopen(input, "w");
+	FILE* file = fopen(input, "a");
 	if (!file) {
 		printf("Error opening file. Redirecting score output to stdout.\n");
 		file = stdout;
 	}
+	sortPlayers(players, pCount);
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+	fprintf(file, "\n\n%d/%d/%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	for (int player = 0; player < pCount; player++) {
-		printf("Enter name for player %d: ", player + 1);
-		fgets(input, sizeof(input), stdin);
-		input[strlen(input) - 1] = 0;
-		fprintf(file, "%s - %d\n", input, players[player]->score);
+		fprintf(file, "%s - %d\n", players[player]->name, players[player]->score);
 	}
 	if (file != stdout) {
 		fclose(file);
@@ -206,7 +207,11 @@ int main(int argc, char* argv[]) {
 	// create players
 	players = (Player**)malloc(pCount * sizeof(Player*));
 	for (int i = 0; i < pCount; i++) {
-		players[i] = createPlayer();
+		char* name = malloc(100);
+		printf("Enter name for player %d: ", i + 1);
+		fgets(name, 100, stdin);
+		name[strlen(name) - 1] = 0;
+		players[i] = createPlayer(name);
 	}
 	// play game
 	playGame();

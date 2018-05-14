@@ -2,3 +2,4 @@
 farkle
 *.a
 *.o
+*.ignore

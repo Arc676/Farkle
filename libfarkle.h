@@ -69,6 +69,7 @@ typedef struct Hand {
 typedef struct Player {
 	Hand* hand;
 	int score;
+	char* name;
 } Player;
 
 /**
@@ -152,9 +153,25 @@ void deselectRoll(Roll* roll);
 
 /**
  * Initializes a Player struct
+ * @param name Player name
  * @return Pointer to the new Player struct
  */
-Player* createPlayer();
+Player* createPlayer(char* name);
+
+/**
+ * Compares two players by their score
+ * @param p1 Pointer to first player
+ * @param p2 Pointer to second player
+ * @return Integer representation of whether p1 has a higher score
+ */
+int comparePlayers(const void* p1, const void* p2);
+
+/**
+ * Sorts a list of players by score
+ * @param players Player list
+ * @param count Number of players
+ */
+void sortPlayers(Player** players, int count);
 
 /**
  * Empties a hand

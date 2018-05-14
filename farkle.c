@@ -161,12 +161,35 @@ void playGame() {
 		}
 	}
 	printf("Game over\n");
+	char input[100];
+	printf("Enter filename for scores: ");
+	fgets(input, sizeof(input), stdin);
+	input[strlen(input) - 1] = 0;
+	if (input[0] == 0) {
+		printf("No filename given. Not saving scores.\n");
+		return;
+	}
+	// save player scores to disk
+	FILE* file = fopen(input, "w");
+	if (!file) {
+		printf("Error opening file. Redirecting score output to stdout.\n");
+		file = stdout;
+	}
+	for (int player = 0; player < pCount; player++) {
+		printf("Enter name for player %d: ", player + 1);
+		fgets(input, sizeof(input), stdin);
+		input[strlen(input) - 1] = 0;
+		fprintf(file, "%s - %d\n", input, players[player]->score);
+	}
+	if (file != stdout) {
+		fclose(file);
+	}
 }
 
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
 	int opt;
-	char* optarg;
+	extern char* optarg;
 	while ((opt = getopt(argc, argv, "p:t:")) != -1) {
 		switch (opt) {
 			case 'p':

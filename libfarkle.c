@@ -40,7 +40,7 @@ void determinePickableDice(Roll* roll, int* allowed) {
 	memset(values, 0, sizeof(values));
 
 	for (int i = 0; i < 6; i++) {
-		if (!roll->dice[i].picked) {
+		if (!roll->dice[i].pickedThisRoll) {
 			values[roll->dice[i].value - 1]++;
 		}
 		// zero-indexed 1 and 5; values that can be picked
@@ -158,6 +158,16 @@ void appendSelection(Player* player, Selection* selection) {
 	}
 }
 
+void undoSelection(Player* player) {
+	player->hand->timesSelected--;
+}
+
+void deselectRoll(Roll* roll) {
+	for (int i = 0; i < 6; i++) {
+		unpickDie(roll, i);
+	}
+}
+
 Player* createPlayer() {
 	Player* p = (Player*)malloc(sizeof(Player));
 	p->score = 0;
@@ -168,14 +178,14 @@ Player* createPlayer() {
 	return p;
 }
 
-void emptyHand(Hand* hand) {
-	hand->timesSelected = 0;
+void emptyHand(Player* player) {
+	player->hand->timesSelected = 0;
 }
 
 void bankPoints(Player* player) {
 	for (int i = 0; i < player->hand->timesSelected; i++) {
 		player->score += player->hand->selections[i]->value;
 	}
-	emptyHand(player->hand);
+	emptyHand(player);
 }
 

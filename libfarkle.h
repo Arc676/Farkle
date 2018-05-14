@@ -149,6 +149,18 @@ void constructSelection(Roll* roll, Selection* selection);
 void appendSelection(Player* player, Selection* selection);
 
 /**
+ * Undoes the last selection appending to a player's hand
+ * @param player Player from whose hand to remove the selection
+ */
+void undoSelection(Player* player);
+
+/**
+ * Unpicks all dice that were selected this roll
+ * @param roll Pointer to roll state
+ */
+void deselectRoll(Roll* roll);
+
+/**
  * Initializes a Player struct
  * @return Pointer to the new Player struct
  */
@@ -156,9 +168,9 @@ Player* createPlayer();
 
 /**
  * Empties a hand
- * @param hand Hand to empty
+ * @param player Player whose hand to empty
  */
-void emptyHand(Hand* hand);
+void emptyHand(Player* player);
 
 /**
  * Banks all points currently in a given

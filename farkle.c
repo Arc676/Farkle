@@ -29,6 +29,7 @@ void printHelp() {
 roll - roll die pool\n\
 view - view the current roll\n\
 pick - pick dice from die pool\n\
+unpick - reset the die selection\n\
 hand - show your current hand\n\
 bank - bank all points currently in hand\n\
 exit - exit the game immediately\n");
@@ -67,8 +68,12 @@ void playGame() {
 				if (!strcmp(cmd, "help")) {
 					printHelp();
 				} else if (!strcmp(cmd, "bank")) {
-					bankPoints(players[player]);
-					state = TURN_ENDED;
+					if (state == ROLLING) {
+						bankPoints(players[player]);
+						state = TURN_ENDED;
+					} else {
+						printf("You must pick from the die pool before banking.\n");
+					}
 				} else if (!strcmp(cmd, "exit")) {
 					// set all loop limits and exit
 					player = pCount;
@@ -82,7 +87,7 @@ void playGame() {
 						viewRoll(roll);
 						if (isFarkle(roll)) {
 							printf("Farkle!\n");
-							emptyHand(players[player]->hand);
+							emptyHand(players[player]);
 							state = TURN_ENDED;
 						} else {
 							state = PICKING;
@@ -95,42 +100,48 @@ void playGame() {
 						viewRoll(roll);
 					}
 				} else if (!strcmp(cmd, "pick")) {
-					printf("Enter die index to pick or unpick. Enter a value greater than 6 to stop picking.\n");
-					int index = 0;
-					char input[10];
-					for (;;) {
-						printf("Picking> ");
-						fgets(input, sizeof(input), stdin);
-						index = atoi(input);
-						if (index < 1 || index > 6) {
-							break;
-						}
-						if (roll->dice[index - 1].picked) {
-							if (unpickDie(roll, index - 1)) {
-								printf("Unpicked die %d\n", index);
-							} else {
-								printf("You cannot unpick this die\n");
-							}
-						} else {
-							if (pickDie(roll, index - 1)) {
-								printf("Picked die %d\n", index);
-							} else {
-								printf("You cannot pick this die\n");
-							}
-						}
-					}
-					Selection* sel = (Selection*)malloc(sizeof(Selection));
-					constructSelection(roll, sel);
-					if (sel->value > 0) {
-						printf("Selected %d points' worth of dice.\n", sel->value);
-						state = ROLLING;
-						appendSelection(players[player], sel);
+					if (state == ROLLING) {
+						printf("You have already picked dice. Type 'unpick' to reset your selection and then 'pick' to pick again.\n");
 					} else {
-						printf("The selection is invalid\n");
-						for (int i = 0; i < 6; i++) {
-							unpickDie(roll, i);
+						printf("Enter die index to pick or unpick. Enter a value greater than 6 to stop picking.\n");
+						int index = 0;
+						char input[10];
+						for (;;) {
+							printf("Picking> ");
+							fgets(input, sizeof(input), stdin);
+							index = atoi(input);
+							if (index < 1 || index > 6) {
+								break;
+							}
+							if (roll->dice[index - 1].picked) {
+								if (unpickDie(roll, index - 1)) {
+									printf("Unpicked die %d\n", index);
+								} else {
+									printf("You cannot unpick this die\n");
+								}
+							} else {
+								if (pickDie(roll, index - 1)) {
+									printf("Picked die %d\n", index);
+								} else {
+									printf("You cannot pick this die\n");
+								}
+							}
+						}
+						Selection* sel = (Selection*)malloc(sizeof(Selection));
+						constructSelection(roll, sel);
+						if (sel->value > 0) {
+							printf("Selected %d points' worth of dice.\n", sel->value);
+							state = ROLLING;
+							appendSelection(players[player], sel);
+						} else {
+							printf("The selection is invalid\n");
+							deselectRoll(roll);
 						}
 					}
+				} else if (!strcmp(cmd, "unpick")) {
+					undoSelection(players[player]);
+					deselectRoll(roll);
+					state = PICKING;
 				} else {
 					printf("Invalid command '%s'. Type 'help' to see a list of commands.\n", cmd);
 				}

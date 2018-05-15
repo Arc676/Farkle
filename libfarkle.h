@@ -184,5 +184,6 @@ void emptyHand(Player* player);
  * Banks all points currently in a given
  * player's hand
  * @param player Player whose hand to bank
+ * @return The number of points banked
  */
-void bankPoints(Player* player);
+int bankPoints(Player* player);

@@ -58,7 +58,7 @@ void playGame() {
 	for (int turn = 0; turn < turns; turn++) {
 		// each player gets a turn
 		for (int player = 0; player < pCount; player++) {
-			printf("Player %d's turn. Current score: %d.\n", player + 1, players[player]->score);
+			printf("%s's turn. Current score: %d.\n", players[player]->name, players[player]->score);
 			initRoll(roll);
 			GameState state = FIRST_ROLL;
 			// until player banks or farkles
@@ -70,7 +70,8 @@ void playGame() {
 					printHelp();
 				} else if (!strcmp(cmd, "bank")) {
 					if (state == ROLLING) {
-						bankPoints(players[player]);
+						int pts = bankPoints(players[player]);
+						printf("Banked %d points.\n", pts);
 						state = TURN_ENDED;
 					} else {
 						printf("You must pick from the die pool before banking.\n");

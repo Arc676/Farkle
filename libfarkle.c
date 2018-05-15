@@ -194,10 +194,13 @@ void emptyHand(Player* player) {
 	player->hand->timesSelected = 0;
 }
 
-void bankPoints(Player* player) {
+int bankPoints(Player* player) {
+	int total = 0;
 	for (int i = 0; i < player->hand->timesSelected; i++) {
-		player->score += player->hand->selections[i]->value;
+		total += player->hand->selections[i]->value;
 	}
+	player->score += total;
 	emptyHand(player);
+	return total;
 }
 

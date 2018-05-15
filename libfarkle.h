@@ -22,9 +22,10 @@
  * must take
  */
 typedef enum GameState {
-	ROLLING,
-	PICKING,
-	TURN_ENDED
+	FIRST_ROLL = 0b0011,
+	ROLLING    = 0b0010,
+	PICKING    = 0b0100,
+	TURN_ENDED = 0b1000
 } GameState;
 
 /**

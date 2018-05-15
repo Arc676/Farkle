@@ -60,7 +60,7 @@ void playGame() {
 		for (int player = 0; player < pCount; player++) {
 			printf("Player %d's turn. Current score: %d.\n", player + 1, players[player]->score);
 			initRoll(roll);
-			GameState state = ROLLING;
+			GameState state = FIRST_ROLL;
 			// until player banks or farkles
 			while (state != TURN_ENDED) {
 				printf("%d> ", player + 1);
@@ -99,6 +99,8 @@ void playGame() {
 				} else if (!strcmp(cmd, "pick")) {
 					if (state == ROLLING) {
 						printf("You have already picked dice. Type 'unpick' to reset your selection and then 'pick' to pick again.\n");
+					} else if (state == FIRST_ROLL) {
+						printf("You have not rolled yet. Type 'roll' to roll.\n");
 					} else {
 						printf("Enter die index to pick or unpick. Enter a value greater than 6 to stop picking.\n");
 						int index = 0;
@@ -136,9 +138,13 @@ void playGame() {
 						}
 					}
 				} else if (!strcmp(cmd, "unpick")) {
-					undoSelection(players[player]);
-					deselectRoll(roll);
-					state = PICKING;
+					if (state == ROLLING) {
+						undoSelection(players[player]);
+						deselectRoll(roll);
+						state = PICKING;
+					} else {
+						printf("Cannot unpick dice at this time.\n");
+					}
 				} else if (!strcmp(cmd, "hand")) {
 					Selection** sels = players[player]->hand->selections;
 					int selCount = players[player]->hand->timesSelected;

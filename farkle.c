@@ -17,6 +17,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "libfarkle.h"
 
@@ -177,15 +178,19 @@ void playGame() {
 		return;
 	}
 	// save player scores to disk
+	int existed = access(input, F_OK) != -1;
 	FILE* file = fopen(input, "a");
 	if (!file) {
 		printf("Error opening file. Redirecting score output to stdout.\n");
 		file = stdout;
 	}
+	if (existed && file != stdout) {
+		fprintf(file, "\n\n");
+	}
 	sortPlayers(players, pCount);
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
-	fprintf(file, "\n\n%d/%d/%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+	fprintf(file, "%d/%d/%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	for (int player = 0; player < pCount; player++) {
 		fprintf(file, "%s - %d\n", players[player]->name, players[player]->score);
 	}

@@ -38,14 +38,17 @@ void newRoll(Roll* roll) {
 	}
 }
 
-void determinePickableDice(Roll* roll, int* allowed) {
-	int values[6];
-	memset(values, 0, sizeof(values));
-
+void countDiceValues(Roll* roll, int* values) {
+	memset(values, 0, 6);
 	for (int i = 0; i < 6; i++) {
 		if (!roll->dice[i].picked || roll->dice[i].pickedThisRoll) {
 			values[roll->dice[i].value - 1]++;
 		}
+	}
+}
+
+void determinePickableDice(Roll* roll, int* values, int* allowed) {
+	for (int i = 0; i < 6; i++) {
 		// zero-indexed 1 and 5; values that can be picked
 		// even if they only appear once
 		if (i != 0 && i != 4) {
@@ -58,8 +61,11 @@ void determinePickableDice(Roll* roll, int* allowed) {
 }
 
 int isFarkle(Roll* roll) {
+	int values[6];
+	countDiceValues(roll, values);
+
 	int allowed[6];
-	determinePickableDice(roll, allowed);
+	determinePickableDice(roll, values, allowed);
 	for (int i = 0; i < 6; i++) {
 		if (allowed[i]) {
 			return 0;
@@ -86,8 +92,11 @@ ToggleResult toggleDie(Roll* roll, int die) {
 }
 
 int pickDie(Roll* roll, int die) {
+	int values[6];
+	countDiceValues(roll, values);
+
 	int allowed[6];
-	determinePickableDice(roll, allowed);
+	determinePickableDice(roll, values, allowed);
 	if (allowed[die]) {
 		roll->dice[die].picked = 1;
 		roll->dice[die].pickedThisRoll = 1;
@@ -97,12 +106,10 @@ int pickDie(Roll* roll, int die) {
 }
 
 int unpickDie(Roll* roll, int die) {
-	if (roll->dice[die].picked) {
-		if (roll->dice[die].pickedThisRoll) {
-			roll->dice[die].picked = 0;
-			roll->dice[die].pickedThisRoll = 0;
-			return 1;
-		}
+	if (roll->dice[die].pickedThisRoll) {
+		roll->dice[die].picked = 0;
+		roll->dice[die].pickedThisRoll = 0;
+		return 1;
 	}
 	return 0;
 }

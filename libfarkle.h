@@ -98,13 +98,22 @@ void initRoll(Roll* roll);
 void newRoll(Roll* roll);
 
 /**
+ * Determines the number of occurrences of each value
+ * on pickable dice for the given roll
+ * @param roll Pointer to roll state
+ * @param values Array in which to store the value count
+ */
+void countDiceValues(Roll* roll, int* values);
+
+/**
  * Determines which of the rolled dice can be
  * picked by the player based on their value
  * and how many times the number has appeared
  * @param roll Pointer to roll state
+ * @param values Occurrences of values on pickable dice
  * @param allowed Array in which to store the acceptable dice (min size 6)
  */
-void determinePickableDice(Roll* roll, int* allowed);
+void determinePickableDice(Roll* roll, int* values, int* allowed);
 
 /**
  * Determines whether the roll was a farkle

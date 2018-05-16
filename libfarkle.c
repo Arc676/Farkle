@@ -30,16 +30,16 @@ void newRoll(Roll* roll) {
 		initRoll(roll);
 	}
 	for (int i = 0; i < 6; i++) {
-		if (!roll->dice[i].picked) {
-			roll->dice[i].value = rand() % 6 + 1;
-		} else {
+		if (roll->dice[i].picked) {
 			roll->dice[i].pickedThisRoll = 0;
+		} else {
+			roll->dice[i].value = rand() % 6 + 1;
 		}
 	}
 }
 
 void countDiceValues(Roll* roll, int* values) {
-	memset(values, 0, 6);
+	memset(values, 0, 6 * sizeof(int));
 	for (int i = 0; i < 6; i++) {
 		if (!roll->dice[i].picked || roll->dice[i].pickedThisRoll) {
 			values[roll->dice[i].value - 1]++;
@@ -60,18 +60,48 @@ void determinePickableDice(Roll* roll, int* values, int* allowed) {
 	}
 }
 
-int isFarkle(Roll* roll) {
+RollType determineRollType(Roll* roll) {
 	int values[6];
 	countDiceValues(roll, values);
+
+	//whether the roll is a straight
+	int isStraight = 1;
+
+	//whether the roll is a triple pair
+	int isTriplePair = 1;
+	//number of times a pair has appeared
+	int _2s = 0;
+
+	for (int i = 0; i < 6; i++) {
+		if (isStraight && values[i] != 1) {
+			isStraight = 0;
+		}
+		if (isTriplePair) {
+			if (values[i] == 2) {
+				_2s++;
+			} else if (values[i] != 0) {
+				isTriplePair = 0;
+			}
+		}
+		if (!isTriplePair && !isStraight) {
+			break;
+		}
+	}
+	if (isStraight) {
+		return STRAIGHT;
+	}
+	if (isTriplePair && _2s == 3) {
+		return TRIPLE_PAIR;
+	}
 
 	int allowed[6];
 	determinePickableDice(roll, values, allowed);
 	for (int i = 0; i < 6; i++) {
 		if (allowed[i]) {
-			return 0;
+			return SIMPLE;
 		}
 	}
-	return 1;
+	return FARKLE;
 }
 
 int diePoolExhausted(Roll* roll) {
@@ -121,7 +151,7 @@ int compareIntegers(const void* a, const void* b) {
 int constructSelection(Roll* roll, Selection* selection) {
 	int dieCount = 0;
 	int chosenValues[6];
-	memset(chosenValues, 0, sizeof(chosenValues));
+	memset(chosenValues, 0, 6 * sizeof(int));
 
 	for (int i = 0; i < 6; i++) {
 		if (roll->dice[i].pickedThisRoll) {

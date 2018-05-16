@@ -29,6 +29,17 @@ typedef enum GameState {
 } GameState;
 
 /**
+ * Represents the basic properties
+ * of a given roll
+ */
+typedef enum RollType {
+	FARKLE,
+	SIMPLE,
+	TRIPLE_PAIR,
+	STRAIGHT
+} RollType;
+
+/**
  * Represents the success or failure of
  * toggling die selection
  */
@@ -116,11 +127,12 @@ void countDiceValues(Roll* roll, int* values);
 void determinePickableDice(Roll* roll, int* values, int* allowed);
 
 /**
- * Determines whether the roll was a farkle
+ * Determines the roll type e.g.
+ * farkle, triple pair, etc.
  * @param roll Pointer to roll state
- * @return Whether any dice are worth points
+ * @return Basic roll type
  */
-int isFarkle(Roll* roll);
+RollType determineRollType(Roll* roll);
 
 /**
  * Toggles whether a die in the pool is selected

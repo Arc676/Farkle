@@ -88,12 +88,25 @@ void playGame() {
 					} else {
 						newRoll(roll);
 						viewRoll(roll);
-						if (isFarkle(roll)) {
+						RollType type = determineRollType(roll);
+						switch (type) {
+						case FARKLE:
 							printf("Farkle!\n");
 							emptyHand(players[player]);
 							state = TURN_ENDED;
-						} else {
+							break;
+						case STRAIGHT:
+							printf("Straight!\n");
+						case TRIPLE_PAIR:
+							if (type != STRAIGHT) {
+								printf("Triple pair!\n");
+							}
+							// TODO: select all dice
+							state = ROLLING;
+							break;
+						default:
 							state = PICKING;
+							break;
 						}
 					}
 				} else if (!strcmp(cmd, "view")) {

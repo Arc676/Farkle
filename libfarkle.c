@@ -79,17 +79,9 @@ int diePoolExhausted(Roll* roll) {
 
 ToggleResult toggleDie(Roll* roll, int die) {
 	if (roll->dice[die].picked) {
-		if (unpickDie(roll, die)) {
-			return UNPICKED;
-		} else {
-			return NOT_UNPICKABLE;
-		}
+		return unpickDie(roll, die) ? UNPICKED : NOT_UNPICKABLE;
 	} else {
-		if (pickDie(roll, die)) {
-			return PICKED;
-		} else {
-			return NOT_PICKABLE;
-		}
+		return pickDie(roll, die) ? PICKED : NOT_PICKABLE;
 	}
 }
 

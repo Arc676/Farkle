@@ -59,7 +59,7 @@ void playGame() {
 	for (int turn = 0; turn < turns; turn++) {
 		// each player gets a turn
 		for (int player = 0; player < pCount; player++) {
-			printf("%s's turn. Current score: %d.\n", players[player]->name, players[player]->score);
+			printf("%s's turn %d of %d. Current score: %d.\n", players[player]->name, turn + 1, turns, players[player]->score);
 			initRoll(roll);
 			GameState state = FIRST_ROLL;
 			// until player banks or farkles
@@ -228,10 +228,5 @@ int main(int argc, char* argv[]) {
 	}
 	// play game
 	playGame();
-	// free player structs
-	for (int i = 0; i < pCount; i++) {
-		free(players[i]);
-	}
-	free(players);
 	return 0;
 }

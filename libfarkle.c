@@ -103,7 +103,7 @@ int compareIntegers(const void* a, const void* b) {
 	return *(int*)a - *(int*)b;
 }
 
-void constructSelection(Roll* roll, Selection* selection) {
+int constructSelection(Roll* roll, Selection* selection) {
 	int dieCount = 0;
 	int chosenValues[6];
 	memset(chosenValues, 0, sizeof(chosenValues));
@@ -127,8 +127,7 @@ void constructSelection(Roll* roll, Selection* selection) {
 		}
 	}
 	if (!selectionValid) {
-		selection->value = 0;
-		return;
+		return 0;
 	}
 	qsort(selection->values, dieCount, sizeof(int), compareIntegers);
 	selection->dieCount = dieCount;
@@ -142,6 +141,7 @@ void constructSelection(Roll* roll, Selection* selection) {
 	} else {
 		selection->value += 50 * chosenValues[4];
 	}
+	return 1;
 }
 
 void appendSelection(Player* player, Selection* selection) {

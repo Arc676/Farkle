@@ -129,8 +129,7 @@ void playGame() {
 							}
 						}
 						Selection* sel = (Selection*)malloc(sizeof(Selection));
-						constructSelection(roll, sel);
-						if (sel->value > 0) {
+						if (constructSelection(roll, sel)) {
 							printf("Selected %d points' worth of dice.\n", sel->value);
 							state = ROLLING;
 							appendSelection(players[player], sel);

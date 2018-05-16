@@ -127,11 +127,13 @@ int diePoolExhausted(Roll* roll);
 
 /**
  * Constructs the die selection based on the state of
- * the rolled dice
+ * the rolled dice; the selection struct is left in a
+ * reusable state if the selection fails
  * @param roll Pointer to roll state
  * @param selection Pointer to struct in which selection data should be stored
+ * @return Whether the selection was valid
  */
-void constructSelection(Roll* roll, Selection* selection);
+int constructSelection(Roll* roll, Selection* selection);
 
 /**
  * Utility function for comparing two integer pointers

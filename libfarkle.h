@@ -127,12 +127,14 @@ void countDiceValues(Roll* roll, int* values);
 void determinePickableDice(Roll* roll, int* values, int* allowed);
 
 /**
- * Determines the roll type e.g.
- * farkle, triple pair, etc.
+ * Determines the roll type e.g. farkle, triple pair, etc. and
+ * constructs a representative Selection struct for the roll if
+ * necessary based on the type
  * @param roll Pointer to roll state
+ * @param selection Selection object in which to store selection if needed
  * @return Basic roll type
  */
-RollType determineRollType(Roll* roll);
+RollType determineRollType(Roll* roll, Selection* selection);
 
 /**
  * Toggles whether a die in the pool is selected

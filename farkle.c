@@ -88,7 +88,8 @@ void playGame() {
 					} else {
 						newRoll(roll);
 						viewRoll(roll);
-						RollType type = determineRollType(roll);
+						Selection* sel = (Selection*)malloc(sizeof(Selection));
+						RollType type = determineRollType(roll, sel);
 						switch (type) {
 						case FARKLE:
 							printf("Farkle!\n");
@@ -101,7 +102,8 @@ void playGame() {
 							if (type != STRAIGHT) {
 								printf("Triple pair!\n");
 							}
-							// TODO: select all dice
+							printf("Selected %d worth of dice.\n", sel->value);
+							appendSelection(players[player], sel);
 							state = ROLLING;
 							break;
 						default:

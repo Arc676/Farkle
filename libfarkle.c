@@ -60,7 +60,7 @@ void determinePickableDice(Roll* roll, int* values, int* allowed) {
 	}
 }
 
-RollType determineRollType(Roll* roll) {
+RollType determineRollType(Roll* roll, Selection* selection) {
 	int values[6];
 	countDiceValues(roll, values);
 
@@ -87,11 +87,16 @@ RollType determineRollType(Roll* roll) {
 			break;
 		}
 	}
-	if (isStraight) {
-		return STRAIGHT;
-	}
-	if (isTriplePair && _2s == 3) {
-		return TRIPLE_PAIR;
+	if (isStraight || (isTriplePair && _2s == 3)) {
+		for (int i = 0; i < 6; i++) {
+			selection->values[i] = roll->dice[i].value;
+			roll->dice[i].picked = 1;
+			roll->dice[i].pickedThisRoll = 1;
+		}
+		qsort(selection->values, 6, sizeof(int), compareIntegers);
+		selection->value = isStraight ? 3000 : 2000;
+		selection->dieCount = 6;
+		return isStraight ? STRAIGHT : TRIPLE_PAIR;
 	}
 
 	int allowed[6];

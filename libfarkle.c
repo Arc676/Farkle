@@ -99,6 +99,10 @@ int unpickDie(Roll* roll, int die) {
 	return 0;
 }
 
+int compareIntegers(const void* a, const void* b) {
+	return *(int*)a - *(int*)b;
+}
+
 void constructSelection(Roll* roll, Selection* selection) {
 	int dieCount = 0;
 	int chosenValues[6];
@@ -126,6 +130,7 @@ void constructSelection(Roll* roll, Selection* selection) {
 		selection->value = 0;
 		return;
 	}
+	qsort(selection->values, dieCount, sizeof(int), compareIntegers);
 	selection->dieCount = dieCount;
 	if (chosenValues[0] >= 3) {
 		selection->value += 1000 * (chosenValues[0] - 2);

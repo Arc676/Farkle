@@ -134,6 +134,15 @@ int diePoolExhausted(Roll* roll);
 void constructSelection(Roll* roll, Selection* selection);
 
 /**
+ * Utility function for comparing two integer pointers
+ * for qsort
+ * @param a Pointer to first integer
+ * @param b Pointer to second integer
+ * @return Integer representation of whether a is greater
+ */
+int compareIntegers(const void* a, const void* b);
+
+/**
  * Adds the given selection of dice to the given player's hand
  * @param player Player to whom the selection belongs
  * @param selection Die selection to add

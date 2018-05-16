@@ -29,6 +29,17 @@ typedef enum GameState {
 } GameState;
 
 /**
+ * Represents the success or failure of
+ * toggling die selection
+ */
+typedef enum ToggleResult {
+	PICKED,
+	UNPICKED,
+	NOT_PICKABLE,
+	NOT_UNPICKABLE
+} ToggleResult;
+
+/**
  * Represents an individual die
  */
 typedef struct Die {
@@ -101,6 +112,14 @@ void determinePickableDice(Roll* roll, int* allowed);
  * @return Whether any dice are worth points
  */
 int isFarkle(Roll* roll);
+
+/**
+ * Toggles whether a die in the pool is selected
+ * @param roll Pointer to the roll state
+ * @param die Index of die whose selection state to toggle
+ * @return Whether the toggle succeeded and why
+ */
+ToggleResult toggleDie(Roll* roll, int die);
 
 /**
  * Removes a die from the pool

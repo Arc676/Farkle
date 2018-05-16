@@ -114,18 +114,20 @@ void playGame() {
 							if (index < 1 || index > 6) {
 								break;
 							}
-							if (roll->dice[index - 1].picked) {
-								if (unpickDie(roll, index - 1)) {
-									printf("Unpicked die %d\n", index);
-								} else {
-									printf("You cannot unpick this die\n");
-								}
-							} else {
-								if (pickDie(roll, index - 1)) {
-									printf("Picked die %d\n", index);
-								} else {
-									printf("You cannot pick this die\n");
-								}
+							ToggleResult res = toggleDie(roll, index - 1);
+							switch (res) {
+							case PICKED:
+								printf("Picked die %d\n", index);
+								break;
+							case UNPICKED:
+								printf("Unpicked die %d\n", index);
+								break;
+							case NOT_PICKABLE:
+								printf("You cannot pick this die\n");
+								break;
+							case NOT_UNPICKABLE:
+								printf("You cannot unpick this die\n");
+								break;
 							}
 						}
 						Selection* sel = (Selection*)malloc(sizeof(Selection));

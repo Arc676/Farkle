@@ -246,6 +246,9 @@ void sortPlayers(Player** players, int count) {
 }
 
 void emptyHand(Player* player) {
+	for (int i = 0; i < player->hand->timesSelected; i++) {
+		free(player->hand->selections[i]);
+	}
 	player->hand->timesSelected = 0;
 }
 
@@ -259,3 +262,10 @@ int bankPoints(Player* player) {
 	return total;
 }
 
+void freePlayer(Player* player) {
+	free(player->name);
+	emptyHand(player);
+	free(player->hand->selections);
+	free(player->hand);
+	free(player);
+}

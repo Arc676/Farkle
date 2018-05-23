@@ -240,3 +240,9 @@ void emptyHand(Player* player);
  * @return The number of points banked
  */
 int bankPoints(Player* player);
+
+/**
+ * Frees all memory associated with a given
+ * player
+ */
+void freePlayer(Player* player);

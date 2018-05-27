@@ -243,5 +243,9 @@ int main(int argc, char* argv[]) {
 	}
 	// play game
 	playGame();
+	for (int i = 0; i < pCount; i++) {
+		freePlayer(players[i]);
+	}
+	free(players);
 	return 0;
 }

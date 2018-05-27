@@ -194,18 +194,18 @@ int constructSelection(Roll* roll, Selection* selection) {
 	return selection->value > 0;
 }
 
-void appendSelection(Player* player, Selection* selection) {
+int appendSelection(Player* player, Selection* selection) {
 	Hand* hand = player->hand;
 	hand->selections[hand->timesSelected++] = selection;
-	if (hand->timesSelected > hand->selectionSize) {
-		Selection** newSel = (Selection**)realloc(hand->selections, hand->selectionSize * 2);
+	if (hand->timesSelected >= hand->selectionSize) {
+		Selection** newSel = (Selection**)realloc(hand->selections, hand->selectionSize * 2 * sizeof(Selection*));
 		if (newSel == NULL) {
-			//fprintf(stderr, "Warning: realloc failed! Appending more selections to your hand could lead to a segfault!\n");
-		} else {
-			hand->selections = newSel;
-			hand->selectionSize *= 2;
+			return 0;
 		}
+		hand->selections = newSel;
+		hand->selectionSize *= 2;
 	}
+	return 1;
 }
 
 void undoSelection(Player* player) {

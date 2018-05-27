@@ -190,8 +190,9 @@ int compareIntegers(const void* a, const void* b);
  * Adds the given selection of dice to the given player's hand
  * @param player Player to whom the selection belongs
  * @param selection Die selection to add
+ * @return Whether the append succeeded (fails if memory cannot be allocated to record selections)
  */
-void appendSelection(Player* player, Selection* selection);
+int appendSelection(Player* player, Selection* selection);
 
 /**
  * Undoes the last selection appending to a player's hand

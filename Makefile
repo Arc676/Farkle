@@ -1,6 +1,9 @@
 CC=gcc
 FLAGS=-std=c11
 
+LIBOUT=libfarkle.a
+EXECOUT=farkle
+
 ifdef DEBUG
 FLAGS+=-g -O0
 endif
@@ -10,13 +13,13 @@ CFLAGS=$(FLAGS) $(INCLUDE)
 LIB=-l farkle
 
 farkle: lib
-	$(CC) $(CFLAGS) farkle.c $(LIB) -o farkle
+	$(CC) $(CFLAGS) farkle.c $(LIB) -o $(EXECOUT)
 
 lib: libfarkle.o
-	ar rcs libfarkle.a libfarkle.o
+	ar rcs $(LIBOUT) libfarkle.o
 
 libfarkle.o:
 	$(CC) -c $(FLAGS) libfarkle.c
 
 clean:
-	rm -f farkle *.o *.a
+	rm -f $(LIBOUT) $(EXECOUT) *.o

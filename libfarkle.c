@@ -158,6 +158,10 @@ int constructSelection(Roll* roll, Selection* selection) {
 	int chosenValues[6];
 	memset(chosenValues, 0, 6 * sizeof(int));
 
+	// initialize selection
+	selection->value = 0;
+	selection->dieCount = 0;
+
 	for (int i = 0; i < 6; i++) {
 		if (roll->dice[i].pickedThisRoll) {
 			selection->values[dieCount++] = roll->dice[i].value;

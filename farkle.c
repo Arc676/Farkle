@@ -119,7 +119,7 @@ void playGame() {
 					} else if (state == FIRST_ROLL) {
 						printf("You have not rolled yet. Type 'roll' to roll.\n");
 					} else {
-						printf("Enter die index to pick or unpick. Enter a value greater than 6 to stop picking.\n");
+						printf("Enter die index to toggle whether it's selected. Enter a value greater than 6 to stop picking.\n");
 						int index = 0;
 						char input[10];
 						for (;;) {
@@ -160,6 +160,8 @@ void playGame() {
 						undoSelection(players[player]);
 						deselectRoll(roll);
 						state = PICKING;
+						printf("Reset die selection.\n");
+						viewRoll(roll);
 					} else {
 						printf("Cannot unpick dice at this time.\n");
 					}
@@ -186,19 +188,21 @@ void playGame() {
 	}
 	printf("Game over\n");
 	char input[100];
+	FILE* file;
+	int existed = 0;
 	printf("Enter filename for scores: ");
 	fgets(input, sizeof(input), stdin);
 	input[strlen(input) - 1] = 0;
 	if (input[0] == 0) {
-		printf("No filename given. Not saving scores.\n");
-		return;
-	}
-	// save player scores to disk
-	int existed = access(input, F_OK) != -1;
-	FILE* file = fopen(input, "a");
-	if (!file) {
-		printf("Error opening file. Redirecting score output to stdout.\n");
+		printf("No filename given. Printing scores to stdout.\n");
 		file = stdout;
+	} else {
+		existed = access(input, F_OK) != -1;
+		FILE* file = fopen(input, "a");
+		if (!file) {
+			printf("Error opening file. Redirecting score output to stdout.\n");
+			file = stdout;
+		}
 	}
 	if (existed && file != stdout) {
 		fprintf(file, "\n\n");

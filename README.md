@@ -48,7 +48,7 @@ This roll is worth 100 points. Only the 1 is worth points; the others have no va
 ```
 1 1 2 3 4
 ```
-This roll is worth 200 points. Player 1 chooses to take both the 1s and now has 300 points in hand. The three 1s are *not* worth 1000 points because they were rolled on separate rolls. Player 1 chooses not to risk it and banks the 250 points. Player 1's score increases by 250 and the turn is passed to the next player.
+This roll is worth 200 points. Player 1 chooses to take both the 1s and now has 300 points in hand. The three 1s are *not* worth 1000 points because they were rolled on separate rolls. Player 1 chooses not to risk it and banks the 300 points. Player 1's score increases by 300 and the turn is passed to the next player.
 
 ### Example 3
 

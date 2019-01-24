@@ -12,6 +12,10 @@ INCLUDE=-I . -L .
 CFLAGS=$(FLAGS) $(INCLUDE)
 LIB=-l farkle
 
+ifdef FPIC
+FLAGS+=-fPIC
+endif
+
 farkle: lib
 	$(CC) $(CFLAGS) farkle.c $(LIB) -o $(EXECOUT)
 

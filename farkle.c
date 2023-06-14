@@ -71,6 +71,7 @@ void playGame() {
 				printf("%d> ", player + 1);
 #ifdef NK
 				char c = getc(stdin);
+				putc('\n', stdout);
 				switch (c) {
 					case 'r':
 						sprintf(cmd, "roll");
@@ -160,6 +161,7 @@ void playGame() {
 							printf("Picking> ");
 #ifdef NK
 							char c = getc(stdin);
+							putc('\n', stdout);
 							switch (c) {
 								case 'q':
 									index = 1;
@@ -313,7 +315,7 @@ int main(int argc, char* argv[]) {
 	struct termios old, new;
 	tcgetattr(STDIN_FILENO, &old);
 	new = old;
-	new.c_lflag &= ~(ICANON | ECHO);
+	new.c_lflag &= ~ICANON;
 
 	tcsetattr(STDIN_FILENO, TCSANOW, &new);
 #endif

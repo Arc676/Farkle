@@ -247,6 +247,9 @@ void playGame() {
 		}
 	}
 	printf("Game over\n");
+}
+
+void saveScores() {
 	char input[100];
 	FILE* file;
 	int existed = 0;
@@ -258,7 +261,7 @@ void playGame() {
 		file = stdout;
 	} else {
 		existed = access(input, F_OK) != -1;
-		FILE* file = fopen(input, "a");
+		file = fopen(input, "a");
 		if (!file) {
 			printf("Error opening file. Redirecting score output to stdout.\n");
 			file = stdout;
@@ -321,6 +324,8 @@ int main(int argc, char* argv[]) {
 #ifdef NK
 	tcsetattr(STDIN_FILENO, TCSANOW, &old);
 #endif
+
+	saveScores();
 
 	for (int i = 0; i < pCount; i++) {
 		freePlayer(players[i]);

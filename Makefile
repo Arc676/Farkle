@@ -1,6 +1,10 @@
 CC=gcc
 FLAGS=-std=c11
 
+ifdef NK
+FLAGS+=-DNK
+endif
+
 LIBOUT=libfarkle.a
 EXECOUT=farkle
 

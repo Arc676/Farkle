@@ -65,8 +65,38 @@ void playGame() {
 			// until player banks or farkles
 			while (state != TURN_ENDED) {
 				printf("%d> ", player + 1);
+#ifdef NK
+				char c = getc(stdin);
+				switch (c) {
+					case 'r':
+						sprintf(cmd, "roll");
+						break;
+					case 'b':
+						sprintf(cmd, "bank");
+						break;
+					case 'e':
+						sprintf(cmd, "exit");
+						break;
+					case 'v':
+						sprintf(cmd, "view");
+						break;
+					case 'p':
+						sprintf(cmd, "pick");
+						break;
+					case '?':
+						sprintf(cmd, "help");
+						break;
+					case 'h':
+						sprintf(cmd, "hand");
+						break;
+					case 'u':
+						sprintf(cmd, "unpick");
+						break;
+				}
+#else
 				fgets(cmd, sizeof(cmd), stdin);
 				cmd[strlen(cmd) - 1] = 0;
+#endif
 				if (!strcmp(cmd, "help")) {
 					printHelp();
 				} else if (!strcmp(cmd, "bank")) {
@@ -124,8 +154,32 @@ void playGame() {
 						char input[10];
 						for (;;) {
 							printf("Picking> ");
+#ifdef NK
+							char c = getc(stdin);
+							switch (c) {
+								case 'q':
+									index = 1;
+									break;
+								case 'w':
+									index = 2;
+									break;
+								case 'e':
+									index = 3;
+									break;
+								case 'r':
+									index = 4;
+									break;
+								case 't':
+									index = 5;
+									break;
+								case 'y':
+									index = 6;
+									break;
+							}
+#else
 							fgets(input, sizeof(input), stdin);
 							index = atoi(input);
+#endif
 							if (index < 1 || index > 6) {
 								break;
 							}

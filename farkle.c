@@ -19,6 +19,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef NK
+#include <termios.h>
+#endif
+
 #include "libfarkle.h"
 
 Player** players;
@@ -175,6 +179,8 @@ void playGame() {
 								case 'y':
 									index = 6;
 									break;
+								default:
+									index = 0;
 							}
 #else
 							fgets(input, sizeof(input), stdin);
@@ -299,8 +305,23 @@ int main(int argc, char* argv[]) {
 		name[strlen(name) - 1] = 0;
 		players[i] = createPlayer(name);
 	}
+
+#ifdef NK
+	struct termios old, new;
+	tcgetattr(STDIN_FILENO, &old);
+	new = old;
+	new.c_lflag &= ~(ICANON | ECHO);
+
+	tcsetattr(STDIN_FILENO, TCSANOW, &new);
+#endif
+
 	// play game
 	playGame();
+
+#ifdef NK
+	tcsetattr(STDIN_FILENO, TCSANOW, &old);
+#endif
+
 	for (int i = 0; i < pCount; i++) {
 		freePlayer(players[i]);
 	}
